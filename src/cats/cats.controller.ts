@@ -3,26 +3,25 @@ import { Request, Response } from 'express';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/cat';
 import { sendData } from '../utils/response';
-import ValidatePipe from './dto/ValidatePipe';
+import ParseIntPipe from '../utils/ParseIntPipe';
 
-function Modify() {
-  return function b(target, propertyKey, descriptor) {
-    console.log(target, propertyKey, descriptor, 'Modify');
-  };
-}
+// function Modify() {
+//   return function b(target, propertyKey, descriptor) {
+//     console.log(target, propertyKey, descriptor, 'Modify');
+//   };
+// }
 
-function Modi(target: CatController, propertyKey, index) {
-  console.log(target, propertyKey, index, 'Modi');
-  return target[propertyKey](222);
-}
+// function Modi(target: CatController, propertyKey, index) {
+//   console.log(target, propertyKey, index, 'Modi');
+//   return target[propertyKey](222);
+// }
 
 @Controller('cat')
 export class CatController {
   constructor(private readonly catsService: CatsService) { }
 
   @Get('get')
-  async getCat(@Query() query: Request['query']): Promise<any> {
-    const { id } = query;
+  async getCat(@Query('id', ParseIntPipe) id: Request['query']): Promise<any> {
     if (id) {
       const cat = this.catsService.getCat(id);
       if (!cat) {
@@ -36,18 +35,17 @@ export class CatController {
   }
 
   @Post('create')
-  @UsePipes(ValidatePipe)
   async setCat(@Body() createCatDto: CreateCatDto) {
     this.catsService.create(createCatDto);
     console.log(this.catsService.findAll(), 666);
     return sendData({}, 201, 'success!');
   }
 
-  @Modify()
-  @Get('test')
-  test(@Modi a: any) {
-    console.log(a, 'test222');
-    return ('ok');
-  }
+  // @Modify()
+  // @Get('test')
+  // test(@Modi a: any) {
+  //   console.log(a, 'test222');
+  //   return ('ok');
+  // }
 
 }
