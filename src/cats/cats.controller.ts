@@ -41,6 +41,12 @@ export class CatController {
     return sendData({}, 201, 'success!');
   }
 
+  @Get('all')
+  async getCatAll(): Promise<any> {
+    const cat = this.catsService.findAll();
+    return sendData(cat);
+  }
+
   // @Modify()
   // @Get('test')
   // test(@Modi a: any) {
